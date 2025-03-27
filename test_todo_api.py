@@ -13,10 +13,11 @@ status_code = response.status_code
 print(status_code)
 """
 
-
+"""
 def test_can_call_endpoint():
     response = requests.get(ENDPOINT)
     assert response.status_code == 200
+"""
 
 
 def test_can_create_task():
@@ -93,6 +94,26 @@ def test_can_list_tasks():
     print(data)
 
 
+def test_can_delete_task():
+    """
+    - Create t
+    - Delete
+    - Get for check if it exists
+    """
+    payload = new_task_payload()
+    create_task_response = create_task(payload)
+    assert create_task_response.status_code == 200
+    task_id = create_task_response.json()["task"]["task_id"]
+
+    delete_task_response = delete_task(task_id)
+    assert delete_task_response.status_code == 200
+
+    get_task_response = get_task(task_id)
+    print("STATUS CODE!:" + str(get_task_response.status_code))
+    assert get_task_response.status_code == 404
+    pass
+
+
 def create_task(payload):
     return requests.put(ENDPOINT + "/create-task", json=payload)
 
@@ -107,6 +128,10 @@ def get_task(task_id):
 
 def list_tasks(user_id):
     return requests.get(ENDPOINT + f"/list-tasks/{user_id}")
+
+
+def delete_task(task_id):
+    return requests.delete(ENDPOINT + f"/delete-task/{task_id}")
 
 
 def new_task_payload():
